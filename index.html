@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ayam Geprek Nendang</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#ef4444', // Merah cabai
+                        secondary: '#facc15', // Kuning keemasan
+                        dark: '#1f2937',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        .hero-pattern {
+            background-color: #fca5a5;
+            background-image: radial-gradient(#ef4444 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        
+        .food-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .food-card {
+            transition: all 0.3s ease;
+        }
+
+        /* Styling untuk custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ef4444; 
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #dc2626; 
+        }
+        
+        /* Animasi keranjang goyang */
+        @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-10deg); }
+            50% { transform: rotate(10deg); }
+            75% { transform: rotate(-10deg); }
+        }
+        .shake-animation {
+            animation: shake 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 antialiased font-sans flex flex-col min-h-screen">
+
+    <nav class="fixed w-full z-50 bg-white/90 backdrop-blur-md shadow-sm transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center gap-2">
+                    <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-red-500/50">
+                        <i class="fa-solid fa-pepper-hot"></i>
+                    </div>
+                    <span class="font-bold text-2xl tracking-tight text-gray-900">Geprek<span class="text-primary">Nendang</span></span>
+                </div>
+                
+                <!-- Menu Desktop -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#beranda" class="text-gray-600 hover:text-primary font-medium transition-colors">Beranda</a>
+                    <a href="#menu" class="text-gray-600 hover:text-primary font-medium transition-colors">Menu</a>
+                    <a href="#tentang" class="text-gray-600 hover:text-primary font-medium transition-colors">Tentang</a>
+                    
+                    <!-- Tombol Keranjang -->
+                    <button id="cartBtn" class="relative bg-primary hover:bg-red-600 text-white p-3 rounded-full transition-colors shadow-lg shadow-red-500/30">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <span id="cartCount" class="absolute -top-2 -right-2 bg-secondary text-dark text-xs font-bold px-2 py-1 rounded-full border-2 border-white">0</span>
+                    </button>
+                </div>
+                
+                <!-- Tombol Menu Mobile -->
+                <div class="md:hidden flex items-center gap-4">
+                    <button id="cartBtnMobile" class="relative text-gray-700 p-2">
+                        <i class="fa-solid fa-cart-shopping text-xl"></i>
+                        <span id="cartCountMobile" class="absolute top-0 right-0 bg-primary text-white text-xs font-bold px-1.5 py-0.5 rounded-full">0</span>
+                    </button>
+                    <button id="mobileMenuBtn" class="text-gray-700 hover:text-primary focus:outline-none">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Menu Mobile Dropdown -->
+        <div id="mobileMenu" class="hidden md:hidden bg-white border-t border-gray-100 shadow-lg absolute w-full">
+            <div class="px-4 pt-2 pb-6 space-y-1">
+                <a href="#beranda" class="block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-red-50">Beranda</a>
+                <a href="#menu" class="block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-red-50">Menu Spesial</a>
+                <a href="#tentang" class="block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-red-50">Tentang Kami</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow pt-20">
+        <section id="beranda" class="relative overflow-hidden hero-pattern pt-16 pb-32 lg:pt-24 lg:pb-40">
+            <!-- Dekorasi background -->
+            <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white/10 to-gray-50/100 pointer-events-none"></div>
+            
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="flex flex-col lg:flex-row items-center gap-12">
+                    <!-- Teks Hero -->
+                    <div class="w-full lg:w-1/2 text-center lg:text-left">
+                        <span class="inline-block py-1 px-3 rounded-full bg-red-100 text-red-600 font-semibold text-sm mb-4 border border-red-200">
+                            🔥 Pedasnya Bikin Nagih!
+                        </span>
+                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
+                            Jawara Pedas,<br>
+                            <span class="text-primary">Ayam Geprek</span><br>
+                            Paling Nendang
+                        </h1>
+                        <p class="text-lg text-gray-700 mb-8 max-w-lg mx-auto lg:mx-0">
+                            Nikmati sensasi ayam krispi yang digeprek dengan sambal bawang super pedas racikan rahasia kami. Dijamin keringat bercucuran tapi gak bisa berhenti makan!
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                            <a href="#menu" class="bg-primary hover:bg-red-600 text-white font-semibold py-3 px-8 rounded-full shadow-lg shadow-red-500/40 transition-transform transform hover:scale-105 text-center">
+                                Pesan Sekarang
+                            </a>
+                            <a href="#tentang" class="bg-white hover:bg-gray-50 text-gray-800 font-semibold py-3 px-8 rounded-full shadow-md transition-all border border-gray-200 text-center flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-play text-primary text-sm"></i> Lihat Cara Buat
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Gambar Hero (SVG Ilustrasi) -->
+                    <div class="w-full lg:w-1/2 relative">
+                        <!-- Lingkaran background -->
+                        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 md:w-96 md:h-96 bg-secondary rounded-full blur-3xl opacity-50 z-0"></div>
+                        
+                        <!-- Menggunakan Placeholder dengan warna dan teks sebagai ganti gambar -->
+                        <div class="relative z-10 w-full max-w-md mx-auto aspect-square bg-gradient-to-tr from-orange-400 to-red-500 rounded-full shadow-2xl border-8 border-white flex items-center justify-center overflow-hidden transform rotate-3 hover:rotate-0 transition-transform duration-500">
+                            <div class="text-center p-6 text-white">
+                                <i class="fa-solid fa-fire-flame-curved text-6xl mb-4 opacity-80"></i>
+                                <h3 class="text-3xl font-bold mb-2">Porsi Jumbo</h3>
+                                <p class="text-sm font-medium opacity-90">+ Es Teh Manis</p>
+                            </div>
+                            
+                            <!-- Hiasan sambal/cabe -->
+                            <i class="fa-solid fa-pepper-hot absolute top-10 right-10 text-4xl text-red-700 transform rotate-45 opacity-80"></i>
+                            <i class="fa-solid fa-pepper-hot absolute bottom-10 left-10 text-3xl text-red-700 transform -rotate-12 opacity-80"></i>
+                        </div>
+                        
+                        <!-- Badge melayang -->
+                        <div class="absolute bottom-10 -left-6 bg-white p-4 rounded-2xl shadow-xl z-20 animate-bounce" style="animation-duration: 3s;">
+                            <div class="flex items-center gap-3">
+                                <div class="bg-green-100 p-2 rounded-full text-green-600">
+                                    <i class="fa-solid fa-star"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500">Rating Pelanggan</p>
+                                    <p class="font-bold text-gray-900">4.9 / 5.0</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="menu" class="py-20 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-primary font-bold tracking-wider uppercase text-sm mb-2">Pilihan Sensasi</h2>
+                    <h3 class="text-3xl md:text-4xl font-bold text-gray-900">Menu Andalan Kami</h3>
+                    <div class="w-24 h-1 bg-primary mx-auto mt-4 rounded-full"></div>
+                </div>
+
+                <!-- Kontainer Grid Menu -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="menuContainer">
+                    <!-- Item menu akan di-render menggunakan JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <section id="tentang" class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col lg:flex-row items-center gap-16">
+                    <div class="w-full lg:w-1/2 grid grid-cols-2 gap-4">
+                        <div class="bg-red-50 p-6 rounded-2xl text-center transform translate-y-8">
+                            <div class="w-14 h-14 bg-red-100 text-primary rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                                <i class="fa-solid fa-drumstick-bite"></i>
+                            </div>
+                            <h4 class="font-bold text-gray-900 mb-2">Ayam Segar</h4>
+                            <p class="text-sm text-gray-600">Diproses dari ayam segar pilihan setiap hari.</p>
+                        </div>
+                        <div class="bg-orange-50 p-6 rounded-2xl text-center">
+                            <div class="w-14 h-14 bg-orange-100 text-orange-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                                <i class="fa-solid fa-mortar-pestle"></i>
+                            </div>
+                            <h4 class="font-bold text-gray-900 mb-2">Sambal Dadakan</h4>
+                            <p class="text-sm text-gray-600">Diulek langsung saat dipesan agar aroma terjaga.</p>
+                        </div>
+                        <div class="bg-yellow-50 p-6 rounded-2xl text-center transform translate-y-8">
+                            <div class="w-14 h-14 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                                <i class="fa-solid fa-bowl-rice"></i>
+                            </div>
+                            <h4 class="font-bold text-gray-900 mb-2">Nasi Sepuasnya</h4>
+                            <p class="text-sm text-gray-600">Makan di tempat? Ambil nasi hangat sepuasmu!</p>
+                        </div>
+                        <div class="bg-green-50 p-6 rounded-2xl text-center">
+                            <div class="w-14 h-14 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                                <i class="fa-solid fa-truck-fast"></i>
+                            </div>
+                            <h4 class="font-bold text-gray-900 mb-2">Cepat Saji</h4>
+                            <p class="text-sm text-gray-600">Proses cepat tanpa mengurangi kualitas rasa.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="w-full lg:w-1/2">
+                        <h2 class="text-primary font-bold tracking-wider uppercase text-sm mb-2">Rahasia Dapur</h2>
+                        <h3 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Mengapa Geprek Nendang Begitu Berbeda?</h3>
+                        <p class="text-gray-600 mb-6 leading-relaxed">
+                            Bukan sekadar ayam goreng tepung yang dipukul. Kami menggunakan teknik marinasi khusus selama 12 jam agar bumbu meresap hingga ke tulang. Tepung pelapis kami ciptakan dari perpaduan 7 rempah pilihan untuk tekstur krispi maksimal yang tahan lama.
+                        </p>
+                        <p class="text-gray-600 mb-8 leading-relaxed">
+                            Kunci utamanya ada pada sambal bawang kami. Menggunakan cabai rawit merah segar, bawang putih pilihan, dan minyak kelapa sawit berkualitas tinggi yang disiramkan dalam kondisi mendidih untuk mengekstrak aroma terbaik.
+                        </p>
+                        <ul class="space-y-3">
+                            <li class="flex items-center gap-3">
+                                <i class="fa-solid fa-check-circle text-green-500"></i>
+                                <span class="font-medium text-gray-700">100% Halal Certified</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <i class="fa-solid fa-check-circle text-green-500"></i>
+                                <span class="font-medium text-gray-700">Tanpa Pengawet Buatan</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <i class="fa-solid fa-check-circle text-green-500"></i>
+                                <span class="font-medium text-gray-700">Level pedas bisa disesuaikan (Level 1-10)</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-dark text-white pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+                <!-- Info Brand -->
+                <div>
+                    <div class="flex items-center gap-2 mb-6">
+                        <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white font-bold">
+                            <i class="fa-solid fa-pepper-hot text-sm"></i>
+                        </div>
+                        <span class="font-bold text-xl tracking-tight">Geprek<span class="text-primary">Nendang</span></span>
+                    </div>
+                    <p class="text-gray-400 mb-6">Menyajikan ayam geprek paling autentik dengan tingkat kepedasan yang akan menguji nyalimu. Berani coba?</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-primary hover:text-white transition-colors">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-primary hover:text-white transition-colors">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-primary hover:text-white transition-colors">
+                            <i class="fa-brands fa-tiktok"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Kontak -->
+                <div>
+                    <h4 class="font-bold text-lg mb-6 border-b border-gray-700 pb-2 inline-block">Hubungi Kami</h4>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3 text-gray-400">
+                            <i class="fa-solid fa-location-dot mt-1 text-primary"></i>
+                            <span>Jl. Jenderal Sudirman No. 123,<br>Jakarta Selatan, 12190</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-400">
+                            <i class="fa-solid fa-phone text-primary"></i>
+                            <span>+62 812 3456 7890</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-gray-400">
+                            <i class="fa-solid fa-envelope text-primary"></i>
+                            <span>halo@gepreknendang.com</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Jam Buka -->
+                <div>
+                    <h4 class="font-bold text-lg mb-6 border-b border-gray-700 pb-2 inline-block">Jam Operasional</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex justify-between border-b border-gray-800 pb-2">
+                            <span>Senin - Jumat</span>
+                            <span class="font-medium text-white">10:00 - 22:00</span>
+                        </li>
+                        <li class="flex justify-between border-b border-gray-800 pb-2 pt-2">
+                            <span>Sabtu - Minggu</span>
+                            <span class="font-medium text-white">09:00 - 23:00</span>
+                        </li>
+                        <li class="flex justify-between pt-2">
+                            <span>Hari Libur Nasional</span>
+                            <span class="font-medium text-primary">TETAP BUKA</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-8 text-center text-gray-500 text-sm">
+                <p>&copy; 2026 Ayam Geprek Nendang. Hak Cipta Dilindungi. | <a href="#" onclick="openAdminLogin(event)" class="hover:text-primary transition-colors">Admin Login</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Overlay Keranjang -->
+    <div id="cartOverlay" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-[60] hidden opacity-0 transition-opacity duration-300"></div>
+    
+    <!-- Sidebar Keranjang -->
+    <div id="cartSidebar" class="fixed top-0 right-0 h-full w-full sm:w-96 bg-white z-[70] transform translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
+        <!-- Header Keranjang -->
+        <div class="px-6 py-4 border-b flex justify-between items-center bg-gray-50">
+            <h3 class="font-bold text-lg text-gray-900 flex items-center gap-2">
+                <i class="fa-solid fa-basket-shopping text-primary"></i> Keranjang Pesanan
+            </h3>
+            <button id="closeCartBtn" class="text-gray-400 hover:text-red-500 focus:outline-none transition-colors">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+        </div>
+        
+        <!-- Isi Keranjang -->
+        <div id="cartItemsContainer" class="flex-grow overflow-y-auto p-6 space-y-4">
+            <!-- Item keranjang akan di-render di sini via JS -->
+            <div class="flex flex-col items-center justify-center h-full text-gray-400 opacity-60">
+                <i class="fa-solid fa-cart-arrow-down text-6xl mb-4"></i>
+                <p>Keranjangmu masih kosong</p>
+                <button onclick="closeCart()" class="mt-4 text-primary font-medium hover:underline">Lihat Menu</button>
+            </div>
+        </div>
+        
+        <!-- Footer Keranjang (Total & Checkout) -->
+        <div class="border-t p-6 bg-gray-50">
+            <div class="flex justify-between items-center mb-4 text-gray-800">
+                <span class="font-medium">Subtotal</span>
+                <span id="cartSubtotal" class="font-bold">Rp 0</span>
+            </div>
+            <p class="text-xs text-gray-500 mb-4">*Belum termasuk ongkos kirim</p>
+            <button id="checkoutBtn" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition-colors flex justify-center items-center gap-2" disabled>
+                <i class="fa-brands fa-whatsapp text-xl"></i> Pesan via WhatsApp
+            </button>
+        </div>
+    </div>
+
+    <div id="toast" class="fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-full shadow-2xl z-[80] flex items-center gap-3 transition-all duration-300 translate-y-20 opacity-0 pointer-events-none">
+        <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white text-xs">
+            <i class="fa-solid fa-check"></i>
+        </div>
+        <span id="toastMessage" class="font-medium text-sm">Ditambahkan ke keranjang</span>
+    </div>
+
+    <!-- Modal Login Admin -->
+    <div id="adminLoginModal" class="fixed inset-0 bg-gray-900/80 backdrop-blur-sm z-[90] hidden opacity-0 transition-opacity duration-300 flex items-center justify-center">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md transform scale-95 transition-transform duration-300 mx-4">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-900">Login Admin</h3>
+                <button onclick="closeAdminLogin()" class="text-gray-400 hover:text-red-500 transition-colors">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <form id="adminLoginForm" onsubmit="handleAdminLogin(event)">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="adminName">Username</label>
+                    <input class="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" id="adminName" type="text" placeholder="Masukkan username">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="adminPassword">Password</label>
+                    <input class="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" id="adminPassword" type="password" placeholder="Masukkan password">
+                    <p id="loginError" class="text-red-500 text-xs italic mt-2 hidden">Username atau password salah.</p>
+                </div>
+                <div class="flex items-center justify-between">
+                    <button class="bg-primary hover:bg-red-600 text-white font-bold py-3 px-4 rounded-lg w-full transition-colors shadow-md" type="submit">
+                        Masuk Dashboard
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard Admin (Layar Penuh) -->
+    <div id="adminDashboard" class="fixed inset-0 bg-gray-50 z-[100] hidden overflow-hidden flex-col">
+        <!-- Header Dashboard -->
+        <div class="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center shadow-sm">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-dark rounded-full flex items-center justify-center text-white font-bold">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <div>
+                    <h2 class="font-bold text-xl text-gray-800">Panel Admin</h2>
+                    <p class="text-xs text-green-500 flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-green-500 inline-block"></span> Online (Teguh)</p>
+                </div>
+            </div>
+            <button onclick="logoutAdmin()" class="bg-red-50 text-red-600 hover:bg-red-100 px-4 py-2 rounded-lg font-medium transition-colors text-sm flex items-center gap-2 border border-red-200">
+                <i class="fa-solid fa-right-from-bracket"></i> Keluar
+            </button>
+        </div>
+
+        <!-- Konten Dashboard -->
+        <div class="flex-grow flex overflow-hidden">
+            <!-- Sidebar -->
+            <div class="w-64 bg-white border-r border-gray-200 p-4 hidden md:block">
+                <ul class="space-y-2">
+                    <li>
+                        <button class="w-full text-left px-4 py-3 bg-red-50 text-primary font-medium rounded-lg flex items-center gap-3 transition-colors">
+                            <i class="fa-solid fa-utensils w-5 text-center"></i> Kelola Menu
+                        </button>
+                    </li>
+                    <li>
+                        <button class="w-full text-left px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-700 font-medium rounded-lg flex items-center gap-3 transition-colors">
+                            <i class="fa-solid fa-clipboard-list w-5 text-center"></i> Pesanan <span class="text-[10px] bg-gray-200 px-2 py-0.5 rounded-full ml-auto">Segera</span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Area Utama -->
+            <div class="flex-grow p-4 md:p-8 overflow-y-auto bg-gray-50">
+                <div class="max-w-5xl mx-auto">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                        <h3 class="text-2xl font-bold text-gray-800">Daftar Menu Aktif</h3>
+                        <button onclick="document.getElementById('addMenuForm').classList.toggle('hidden')" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-sm flex items-center gap-2">
+                            <i class="fa-solid fa-plus"></i> Tambah Menu
+                        </button>
+                    </div>
+
+                    <!-- Form Tambah Menu (Default disembunyikan) -->
+                    <div id="addMenuForm" class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 mb-6 hidden transition-all">
+                        <h4 class="font-bold text-gray-800 mb-4 border-b pb-3"><i class="fa-solid fa-pen-to-square text-primary mr-2"></i> Tambah Menu Baru</h4>
+                        <form onsubmit="handleAddNewMenu(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">Nama Menu</label>
+                                <input type="text" id="newMenuName" required class="w-full border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">Harga (Rp)</label>
+                                <input type="number" id="newMenuPrice" required class="w-full border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-bold text-gray-700 mb-1">Deskripsi / Komposisi</label>
+                                <input type="text" id="newMenuDesc" required class="w-full border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 mb-1">Level Pedas Max (1-5)</label>
+                                <input type="number" id="newMenuSpicy" min="1" max="5" value="3" required class="w-full border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
+                            </div>
+                            <div class="flex items-end justify-end gap-3 mt-2 md:col-span-2">
+                                <button type="button" onclick="document.getElementById('addMenuForm').classList.add('hidden')" class="px-5 py-2.5 border border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">Batal</button>
+                                <button type="submit" class="px-5 py-2.5 bg-primary text-white rounded-lg text-sm font-bold hover:bg-red-600 transition-colors shadow-md">Simpan ke Menu</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Tabel Menu Admin -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse min-w-[600px]">
+                                <thead>
+                                    <tr class="bg-gray-50 border-b border-gray-200 text-gray-600 text-sm">
+                                        <th class="p-4 font-semibold w-1/3">Nama Item</th>
+                                        <th class="p-4 font-semibold w-1/3">Deskripsi Singkat</th>
+                                        <th class="p-4 font-semibold">Harga</th>
+                                        <th class="p-4 font-semibold text-center">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="adminMenuList" class="divide-y divide-gray-100">
+                                    <!-- Diisi oleh JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Menu
+        const menuData = [
+            {
+                id: 1,
+                name: "Paket Geprek Original",
+                desc: "Nasi putih + Ayam krispi dada/paha + Sambal Bawang + Lalapan",
+                price: 18000,
+                spicyLevel: 5,
+                color: "bg-orange-100",
+                icon: "fa-drumstick-bite"
+            },
+            {
+                id: 2,
+                name: "Paket Geprek Keju Leleh",
+                desc: "Paket original disiram saus keju gurih dan taburan keju parut",
+                price: 23000,
+                spicyLevel: 3,
+                color: "bg-yellow-100",
+                icon: "fa-cheese"
+            },
+            {
+                id: 3,
+                name: "Paket Geprek Mozzarella",
+                desc: "Ayam geprek berbalut keju mozzarella yang dilelehkan (torch) di atasnya",
+                price: 25000,
+                spicyLevel: 4,
+                color: "bg-amber-100",
+                icon: "fa-pizza-slice"
+            },
+            {
+                id: 4,
+                name: "Geprek Matah Bali",
+                desc: "Sensasi segar sambal matah khas Bali dengan irisan serai dan daun jeruk",
+                price: 20000,
+                spicyLevel: 4,
+                color: "bg-green-100",
+                icon: "fa-leaf"
+            },
+            {
+                id: 5,
+                name: "Indomie Geprek Nyemek",
+                desc: "Indomie goreng dimasak nyemek dipadukan dengan ayam geprek",
+                price: 22000,
+                spicyLevel: 5,
+                color: "bg-red-100",
+                icon: "fa-bowl-food"
+            },
+            {
+                id: 6,
+                name: "Geprek Bakar Madu",
+                desc: "Ayam digeprek lalu dibakar dengan olesan bumbu madu pedas manis",
+                price: 24000,
+                spicyLevel: 2,
+                color: "bg-stone-200",
+                icon: "fa-fire"
+            }
+        ];
+
+        // State Aplikasi
+        let cart = [];
+        let isAdminLoggedIn = false;
+
+        // Kredensial Admin (Disimpan di client-side untuk keperluan prototipe ini)
+        const ADMIN_CREDS = {
+            username: "Teguh",
+            password: "Teguh123"
+        };
+
+        // --- FUNGSI ADMIN --- //
+        
+        // Membuka modal login admin
+        function openAdminLogin(e) {
+            if(e) e.preventDefault();
+            const modal = document.getElementById('adminLoginModal');
+            modal.classList.remove('hidden');
+            // Sedikit delay untuk transisi
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.querySelector('div').classList.remove('scale-95');
+            }, 10);
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Menutup modal login admin
+        function closeAdminLogin() {
+            const modal = document.getElementById('adminLoginModal');
+            modal.classList.add('opacity-0');
+            modal.querySelector('div').classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                document.body.style.overflow = '';
+                document.getElementById('loginError').classList.add('hidden');
+                document.getElementById('adminLoginForm').reset();
+            }, 300);
+        }
+
+        // Validasi login admin
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const user = document.getElementById('adminName').value;
+            const pass = document.getElementById('adminPassword').value;
+            const errorText = document.getElementById('loginError');
+
+            if (user === ADMIN_CREDS.username && pass === ADMIN_CREDS.password) {
+                isAdminLoggedIn = true;
+                closeAdminLogin();
+                showAdminDashboard();
+            } else {
+                errorText.classList.remove('hidden');
+                // Animasi getar saat salah password
+                const formBox = document.getElementById('adminLoginForm').parentElement;
+                formBox.classList.add('shake-animation');
+                setTimeout(() => formBox.classList.remove('shake-animation'), 500);
+            }
+        }
+
+        // Menampilkan Dashboard Admin
+        function showAdminDashboard() {
+            document.getElementById('adminDashboard').classList.remove('hidden');
+            document.getElementById('adminDashboard').classList.add('flex');
+            document.body.style.overflow = 'hidden';
+            renderAdminMenu();
+        }
+
+        // Keluar dari Dashboard
+        function logoutAdmin() {
+            isAdminLoggedIn = false;
+            document.getElementById('adminDashboard').classList.add('hidden');
+            document.getElementById('adminDashboard').classList.remove('flex');
+            document.body.style.overflow = '';
+            showToast("Admin Teguh telah keluar");
+        }
+
+        // Render daftar menu di tabel admin
+        function renderAdminMenu() {
+            const tbody = document.getElementById('adminMenuList');
+            tbody.innerHTML = '';
+            
+            menuData.forEach((item) => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="p-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 ${item.color} rounded-lg flex items-center justify-center text-sm text-gray-700 shadow-sm">
+                                    <i class="fa-solid ${item.icon}"></i>
+                                </div>
+                                <div>
+                                    <span class="font-bold text-gray-800 text-sm block">${item.name}</span>
+                                    <span class="text-[10px] text-red-500 bg-red-50 px-1.5 py-0.5 rounded">Lv. ${item.spicyLevel}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="p-4 text-xs text-gray-500 max-w-xs truncate" title="${item.desc}">${item.desc}</td>
+                        <td class="p-4 font-bold text-gray-800 text-sm">${formatRupiah(item.price)}</td>
+                        <td class="p-4 text-center">
+                            <button onclick="deleteMenuItem(${item.id})" class="text-red-500 hover:text-white hover:bg-red-500 p-2 rounded-lg transition-colors border border-transparent hover:border-red-600 shadow-sm" title="Hapus Menu">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Menambahkan menu baru dari form admin
+        function handleAddNewMenu(e) {
+            e.preventDefault();
+            const name = document.getElementById('newMenuName').value;
+            const price = parseInt(document.getElementById('newMenuPrice').value);
+            const desc = document.getElementById('newMenuDesc').value;
+            const spicyLevel = parseInt(document.getElementById('newMenuSpicy').value);
+            
+            // Buat ID baru berdasarkan ID tertinggi
+            const newId = menuData.length > 0 ? Math.max(...menuData.map(m => m.id)) + 1 : 1;
+            
+            // Pilih warna dan icon acak untuk item baru agar menarik
+            const colors = ['bg-red-100', 'bg-orange-100', 'bg-yellow-100', 'bg-green-100', 'bg-blue-100', 'bg-purple-100', 'bg-pink-100'];
+            const icons = ['fa-drumstick-bite', 'fa-bowl-food', 'fa-fire', 'fa-utensils', 'fa-pepper-hot', 'fa-bacon', 'fa-burger'];
+            
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            const randomIcon = icons[Math.floor(Math.random() * icons.length)];
+
+            // Tambahkan ke array data utama
+            menuData.push({
+                id: newId,
+                name: name,
+                desc: desc,
+                price: price,
+                spicyLevel: spicyLevel,
+                color: randomColor,
+                icon: randomIcon
+            });
+
+            // Tutup dan reset form
+            document.getElementById('addMenuForm').reset();
+            document.getElementById('addMenuForm').classList.add('hidden');
+            
+            // Refresh kedua UI (Admin & Pelanggan)
+            renderAdminMenu();
+            renderMenu(); 
+            showToast("🎉 Menu baru berhasil ditambahkan!");
+        }
+
+        // Menghapus menu (Admin)
+        function deleteMenuItem(id) {
+            // Gunakan custom modal jika memungkinkan, tapi untuk prototipe ini kita fallback ke konfirmasi dasar UI
+            // Untuk mematuhi aturan "No Alert/Confirm", kita modifikasi sedikit array tanpa native confirm, 
+            // namun karena tidak boleh menggunakan native confirm, saya akan langsung menghapusnya dan memberikan toast.
+            
+            const index = menuData.findIndex(item => item.id === id);
+            if(index > -1) {
+                const itemName = menuData[index].name;
+                menuData.splice(index, 1);
+                
+                // Jika menu yang dihapus ada di keranjang pelanggan, hapus juga
+                cart = cart.filter(item => item.id !== id);
+                updateCartUI();
+                
+                // Refresh UI
+                renderAdminMenu();
+                renderMenu();
+                
+                showToast(`🗑️ ${itemName} dihapus.`);
+            }
+        }
+
+
+        // Utilities
+        const formatRupiah = (number) => {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
+        };
+
+        // DOM Elements
+        const menuContainer = document.getElementById('menuContainer');
+        const cartCountEls = [document.getElementById('cartCount'), document.getElementById('cartCountMobile')];
+        const cartItemsContainer = document.getElementById('cartItemsContainer');
+        const cartSubtotal = document.getElementById('cartSubtotal');
+        const cartOverlay = document.getElementById('cartOverlay');
+        const cartSidebar = document.getElementById('cartSidebar');
+        const checkoutBtn = document.getElementById('checkoutBtn');
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toastMessage');
+
+        function renderMenu() {
+            menuContainer.innerHTML = '';
+            menuData.forEach((item, index) => {
+                // Membuat indikator level pedas
+                let spicyIcons = '';
+                for(let i=0; i<item.spicyLevel; i++) {
+                    spicyIcons += `<i class="fa-solid fa-pepper-hot text-red-500 text-xs"></i>`;
+                }
+
+                const cardHTML = `
+                    <div class="food-card bg-white rounded-2xl p-6 border border-gray-100 shadow-sm relative flex flex-col h-full opacity-0 translate-y-4" style="animation: fadeInUp 0.5s ease forwards ${index * 0.1}s;">
+                        <div class="w-16 h-16 ${item.color} rounded-2xl flex items-center justify-center text-3xl mb-4 shadow-inner text-gray-700">
+                            <i class="fa-solid ${item.icon}"></i>
+                        </div>
+                        
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="text-xl font-bold text-gray-900">${item.name}</h4>
+                        </div>
+                        
+                        <div class="flex items-center gap-1 mb-3 bg-red-50 w-max px-2 py-1 rounded text-xs font-medium text-red-800">
+                            Level Pedas: ${spicyIcons}
+                        </div>
+                        
+                        <p class="text-gray-500 text-sm mb-6 flex-grow">${item.desc}</p>
+                        
+                        <div class="flex items-center justify-between mt-auto pt-4 border-t border-gray-50">
+                            <span class="font-bold text-xl text-primary">${formatRupiah(item.price)}</span>
+                            <button onclick="addToCart(${item.id})" class="bg-gray-900 hover:bg-primary text-white w-10 h-10 rounded-full flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary shadow-md">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                menuContainer.innerHTML += cardHTML;
+            });
+            
+            // Tambahkan keyframes untuk animasi masuk
+            if(!document.getElementById('keyframes-setup')) {
+                const style = document.createElement('style');
+                style.id = 'keyframes-setup';
+                style.innerHTML = `
+                    @keyframes fadeInUp {
+                        to {
+                            opacity: 1;
+                            transform: translateY(0);
+                        }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+
+        function addToCart(id) {
+            const item = menuData.find(i => i.id === id);
+            const existingItem = cart.find(i => i.id === id);
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ ...item, quantity: 1 });
+            }
+
+            updateCartUI();
+            showToast(`${item.name} ditambahkan!`);
+            
+            // Animasi ikon keranjang
+            const deskCartIcon = document.getElementById('cartBtn');
+            deskCartIcon.classList.remove('shake-animation');
+            void deskCartIcon.offsetWidth; // trigger reflow
+            deskCartIcon.classList.add('shake-animation');
+        }
+
+        function updateQuantity(id, change) {
+            const itemIndex = cart.findIndex(i => i.id === id);
+            if (itemIndex > -1) {
+                cart[itemIndex].quantity += change;
+                if (cart[itemIndex].quantity <= 0) {
+                    cart.splice(itemIndex, 1);
+                }
+                updateCartUI();
+            }
+        }
+
+        function updateCartUI() {
+            // Update counts
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartCountEls.forEach(el => {
+                el.innerText = totalItems;
+                // Pop effect
+                el.classList.add('scale-150');
+                setTimeout(() => el.classList.remove('scale-150'), 200);
+            });
+
+            // Update items HTML
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-full text-gray-400 opacity-60 py-10">
+                        <i class="fa-solid fa-cart-arrow-down text-6xl mb-4"></i>
+                        <p>Keranjangmu masih kosong</p>
+                        <button onclick="closeCart()" class="mt-4 text-primary font-medium hover:underline bg-red-50 px-4 py-2 rounded-full">Lihat Menu</button>
+                    </div>
+                `;
+                checkoutBtn.disabled = true;
+                checkoutBtn.classList.replace('bg-green-500', 'bg-gray-300');
+                checkoutBtn.classList.replace('hover:bg-green-600', 'hover:bg-gray-300');
+            } else {
+                cartItemsContainer.innerHTML = '';
+                let total = 0;
+
+                cart.forEach(item => {
+                    const itemTotal = item.price * item.quantity;
+                    total += itemTotal;
+
+                    cartItemsContainer.innerHTML += `
+                        <div class="flex items-center gap-4 bg-white p-3 border border-gray-100 rounded-xl shadow-sm">
+                            <div class="w-12 h-12 ${item.color} rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid ${item.icon} text-gray-700"></i>
+                            </div>
+                            <div class="flex-grow">
+                                <h5 class="text-sm font-bold text-gray-800 leading-tight">${item.name}</h5>
+                                <div class="text-primary font-semibold text-sm">${formatRupiah(item.price)}</div>
+                            </div>
+                            <div class="flex items-center gap-2 bg-gray-50 rounded-lg p-1 border">
+                                <button onclick="updateQuantity(${item.id}, -1)" class="w-6 h-6 flex items-center justify-center text-gray-500 hover:text-red-500 hover:bg-red-50 rounded">
+                                    <i class="fa-solid fa-minus text-xs"></i>
+                                </button>
+                                <span class="text-sm font-bold w-4 text-center">${item.quantity}</span>
+                                <button onclick="updateQuantity(${item.id}, 1)" class="w-6 h-6 flex items-center justify-center text-gray-500 hover:text-green-500 hover:bg-green-50 rounded">
+                                    <i class="fa-solid fa-plus text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                cartSubtotal.innerText = formatRupiah(total);
+                checkoutBtn.disabled = false;
+                checkoutBtn.classList.replace('bg-gray-300', 'bg-green-500');
+                checkoutBtn.classList.replace('hover:bg-gray-300', 'hover:bg-green-600');
+            }
+        }
+
+        function openCart() {
+            cartOverlay.classList.remove('hidden');
+            // Sedikit delay agar transisi terlihat
+            setTimeout(() => {
+                cartOverlay.classList.remove('opacity-0');
+                cartSidebar.classList.remove('translate-x-full');
+            }, 10);
+            document.body.style.overflow = 'hidden'; // Mencegah scrolling latar belakang
+        }
+
+        function closeCart() {
+            cartOverlay.classList.add('opacity-0');
+            cartSidebar.classList.add('translate-x-full');
+            setTimeout(() => {
+                cartOverlay.classList.add('hidden');
+                document.body.style.overflow = '';
+            }, 300);
+        }
+
+        function showToast(msg) {
+            toastMessage.innerText = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+            }, 3000);
+        }
+
+        function sendToWhatsApp() {
+            if(cart.length === 0) return;
+
+            let text = `Halo Geprek Nendang!%0ASaya ingin memesan:%0A%0A`;
+            let total = 0;
+            
+            cart.forEach((item, index) => {
+                let sub = item.price * item.quantity;
+                total += sub;
+                text += `${index + 1}. *${item.name}*%0A`;
+                text += `   ${item.quantity} x Rp${item.price.toLocaleString('id-ID')} = Rp${sub.toLocaleString('id-ID')}%0A`;
+            });
+            
+            text += `%0A*Total: Rp${total.toLocaleString('id-ID')}*%0A%0A`;
+            text += `Mohon info untuk ongkos kirim dan pembayaran. Terima kasih.`;
+
+            // Ganti dengan nomor WhatsApp pemilik (format internasional tanpa +)
+            const waNumber = "6281234567890";
+            const waUrl = `https://wa.me/${waNumber}?text=${text}`;
+            
+            window.open(waUrl, '_blank');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Render menu awal
+            renderMenu();
+
+            // Event Listeners Keranjang
+            document.getElementById('cartBtn').addEventListener('click', openCart);
+            document.getElementById('cartBtnMobile').addEventListener('click', openCart);
+            document.getElementById('closeCartBtn').addEventListener('click', closeCart);
+            cartOverlay.addEventListener('click', closeCart);
+            
+            // Checkout
+            checkoutBtn.addEventListener('click', sendToWhatsApp);
+
+            // Menu Mobile Toggle
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                const icon = mobileMenuBtn.querySelector('i');
+                if(mobileMenu.classList.contains('hidden')) {
+                    icon.classList.replace('fa-xmark', 'fa-bars');
+                } else {
+                    icon.classList.replace('fa-bars', 'fa-xmark');
+                }
+            });
+
+            // Tutup menu mobile saat link diklik
+            const mobileLinks = mobileMenu.querySelectorAll('a');
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                    mobileMenuBtn.querySelector('i').classList.replace('fa-xmark', 'fa-bars');
+                });
+            });
+
+            // Efek Navbar saat scroll
+            const navbar = document.getElementById('navbar');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 20) {
+                    navbar.classList.add('shadow-md');
+                    navbar.classList.replace('bg-white/90', 'bg-white/95');
+                } else {
+                    navbar.classList.remove('shadow-md');
+                    navbar.classList.replace('bg-white/95', 'bg-white/90');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
